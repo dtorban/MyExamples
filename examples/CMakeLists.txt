@@ -1,0 +1,2 @@
+add_subdirectory(ConsoleExample)
+add_subdirectory(EigenExample)

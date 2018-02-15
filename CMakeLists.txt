@@ -14,3 +14,4 @@ endif()
 include(${CMAKE_FRAMEWORK_DIR}/project/MainProject.cmake)
 
 add_subdirectory(app)
+add_subdirectory(examples)
