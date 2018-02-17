@@ -59,14 +59,14 @@ public:
             // If this is the inital call, initialize context variables
             if ((int)stateData.getValue("InitRender") == 1) {
                 
-#ifdef _WIN32
+//#ifdef _WIN32
                 glewExperimental = GL_TRUE;
                 GLenum err = glewInit();
                 if (GLEW_OK != err)
                 {
                     std::cout << "Error initializing GLEW." << std::endl;
                 }
-#endif
+//#endif
                 
                 // Init GL
                 glEnable(GL_DEPTH_TEST);
