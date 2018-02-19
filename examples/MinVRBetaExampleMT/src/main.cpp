@@ -1,67 +1,9 @@
 #include <iostream>
-
+#include <vector>
 #include "OpenGL.h"
-
+#include "glm/glm.hpp"
 #include "VRMultithreadedApp.h"
 using namespace MinVR;
-
-
-                // Create VBO
-                float vertices[]  = { 1.0f, 1.0f, 1.0f,  -1.0f, 1.0f, 1.0f,  -1.0f,-1.0f, 1.0f,      // v0-v1-v2 (front)
-                        -1.0f,-1.0f, 1.0f,   1.0f,-1.0f, 1.0f,   1.0f, 1.0f, 1.0f,      // v2-v3-v0
-
-                        1.0f, 1.0f, 1.0f,   1.0f,-1.0f, 1.0f,   1.0f,-1.0f,-1.0f,      // v0-v3-v4 (right)
-                        1.0f,-1.0f,-1.0f,   1.0f, 1.0f,-1.0f,   1.0f, 1.0f, 1.0f,      // v4-v5-v0
-
-                        1.0f, 1.0f, 1.0f,   1.0f, 1.0f,-1.0f,  -1.0f, 1.0f,-1.0f,      // v0-v5-v6 (top)
-                        -1.0f, 1.0f,-1.0f,  -1.0f, 1.0f, 1.0f,   1.0f, 1.0f, 1.0f,      // v6-v1-v0
-
-                        -1.0f, 1.0f, 1.0f,  -1.0f, 1.0f,-1.0f,  -1.0f,-1.0f,-1.0f,      // v1-v6-v7 (left)
-                        -1.0f,-1.0f,-1.0f,  -1.0f,-1.0f, 1.0f,  -1.0f, 1.0f, 1.0f,      // v7-v2-v1.0
-
-                        -1.0f,-1.0f,-1.0f,   1.0f,-1.0f,-1.0f,   1.0f,-1.0f, 1.0f,      // v7-v4-v3 (bottom)
-                        1.0f,-1.0f, 1.0f,  -1.0f,-1.0f, 1.0f,  -1.0f,-1.0f,-1.0f,      // v3-v2-v7
-
-                        1.0f,-1.0f,-1.0f,  -1.0f,-1.0f,-1.0f,  -1.0f, 1.0f,-1.0f,      // v4-v7-v6 (back)
-                        -1.0f, 1.0f,-1.0f,   1.0f, 1.0f,-1.0f,   1.0f,-1.0f,-1.0f };    // v6-v5-v4
-
-                // normal array
-                float normals[]   = { 0, 0, 1,   0, 0, 1,   0, 0, 1,      // v0-v1-v2 (front)
-                        0, 0, 1,   0, 0, 1,   0, 0, 1,      // v2-v3-v0
-
-                        1, 0, 0,   1, 0, 0,   1, 0, 0,      // v0-v3-v4 (right)
-                        1, 0, 0,   1, 0, 0,   1, 0, 0,      // v4-v5-v0
-
-                        0, 1, 0,   0, 1, 0,   0, 1, 0,      // v0-v5-v6 (top)
-                        0, 1, 0,   0, 1, 0,   0, 1, 0,      // v6-v1-v0
-
-                        -1, 0, 0,  -1, 0, 0,  -1, 0, 0,      // v1-v6-v7 (left)
-                        -1, 0, 0,  -1, 0, 0,  -1, 0, 0,      // v7-v2-v1
-
-                        0,-1, 0,   0,-1, 0,   0,-1, 0,      // v7-v4-v3 (bottom)
-                        0,-1, 0,   0,-1, 0,   0,-1, 0,      // v3-v2-v7
-
-                        0, 0,-1,   0, 0,-1,   0, 0,-1,      // v4-v7-v6 (back)
-                        0, 0,-1,   0, 0,-1,   0, 0,-1 };    // v6-v5-v4
-
-                // color array
-                float colors[]    = { 1, 1, 1,   1, 1, 0,   1, 0, 0,      // v0-v1-v2 (front)
-                        1, 0, 0,   1, 0, 1,   1, 1, 1,      // v2-v3-v0
-
-                        1, 1, 1,   1, 0, 1,   0, 0, 1,      // v0-v3-v4 (right)
-                        0, 0, 1,   0, 1, 1,   1, 1, 1,      // v4-v5-v0
-
-                        1, 1, 1,   0, 1, 1,   0, 1, 0,      // v0-v5-v6 (top)
-                        0, 1, 0,   1, 1, 0,   1, 1, 1,      // v6-v1-v0
-
-                        1, 1, 0,   0, 1, 0,   0, 0, 0,      // v1-v6-v7 (left)
-                        0, 0, 0,   1, 0, 0,   1, 1, 0,      // v7-v2-v1
-
-                        0, 0, 0,   0, 0, 1,   1, 0, 1,      // v7-v4-v3 (bottom)
-                        1, 0, 1,   1, 0, 0,   0, 0, 0,      // v3-v2-v7
-
-                        0, 0, 1,   0, 0, 0,   0, 1, 0,      // v4-v7-v6 (back)
-                        0, 1, 0,   0, 1, 1,   0, 0, 1 };    // v6-v5-v4
 
 /**
  * MyVRApp is an example of a modern OpenGL using VBOs, VAOs, and shaders.  MyVRApp inherits
@@ -70,32 +12,57 @@ using namespace MinVR;
  */
 class MyVRApp : public VRMultithreadedApp {
 public:
-	MyVRApp(int argc, char** argv) : VRMultithreadedApp(argc, argv) {
+    MyVRApp(int argc, char** argv) : VRMultithreadedApp(argc, argv) {
+        nodes.push_back(glm::vec3(0.0f, 0.0f, 0.0f));
+        nodes.push_back(glm::vec3(1.0f, 1.0f, 0.0f));
+        nodes.push_back(glm::vec3(1.0f, 0.0f, 0.0f));
+        normals.push_back(glm::vec3(0.0f, 0.0f, 1.0f));
+        normals.push_back(glm::vec3(0.0f, 0.0f, 1.0f));
+        normals.push_back(glm::vec3(0.0f, 0.0f, 1.0f));
+        colors.push_back(glm::vec3(1.0f, 0.0f, 0.0f));
+        colors.push_back(glm::vec3(0.0f, 1.0f, 0.0f));
+        colors.push_back(glm::vec3(0.0f, 0.0f, 1.0f));
+        nodes.push_back(glm::vec3(1.0f, 0.0f, 0.0f));
+        nodes.push_back(glm::vec3(0.0f, 1.0f, 0.0f));
+        nodes.push_back(glm::vec3(0.0f, 1.0f, 1.0f));
+        normals.push_back(glm::vec3(0.0f, 0.0f, 1.0f));
+        normals.push_back(glm::vec3(0.0f, 0.0f, 1.0f));
+        normals.push_back(glm::vec3(0.0f, 0.0f, 1.0f));
+        colors.push_back(glm::vec3(1.0f, 0.0f, 0.0f));
+        colors.push_back(glm::vec3(0.0f, 1.0f, 0.0f));
+        colors.push_back(glm::vec3(0.0f, 0.0f, 1.0f));
+        indices.push_back(0);
+        indices.push_back(1);
+        indices.push_back(2);
+        indices.push_back(3);
+        indices.push_back(4);
+        indices.push_back(5);
+
     }
 
 
-	/// onVREvent is called when a new intput event happens.
-	void onVREvent(const VRDataIndex &event) {
+    /// onVREvent is called when a new intput event happens.
+    void onVREvent(const VRDataIndex &event) {
 
         //event.printStructure();
 
-		// Set time since application began
-		if (event.getName() == "FrameStart") {
+        // Set time since application began
+        if (event.getName() == "FrameStart") {
             float time = event.getValue("ElapsedSeconds");
-			// Calculate model matrix based on time
-			VRMatrix4 modelMatrix = VRMatrix4::rotationX(0.5f*time);
-			modelMatrix = modelMatrix * VRMatrix4::rotationY(0.5f*time);
-			for (int f = 0; f < 16; f++) {
-				model[f] = modelMatrix.getArray()[f];
-			}
-			return;
-		}
+            // Calculate model matrix based on time
+            VRMatrix4 modelMatrix = VRMatrix4::rotationX(0.5f*time);
+            modelMatrix = modelMatrix * VRMatrix4::rotationY(0.5f*time);
+            for (int f = 0; f < 16; f++) {
+                model[f] = modelMatrix.getArray()[f];
+            }
+            return;
+        }
 
-		// Quit if the escape button is pressed
-		if (event.getName() == "KbdEsc_Down") {
-			running = false;
-		}
-	}
+        // Quit if the escape button is pressed
+        if (event.getName() == "KbdEsc_Down") {
+            running = false;
+        }
+    }
 
     class Context : public VRAppSharedContext {
     public:
@@ -107,13 +74,17 @@ public:
                     std::cout << "Error initializing GLEW." << std::endl;
                 }
 
+                glGenBuffers(1, &elementBuffer);
+                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer);
+                glBufferData(GL_ELEMENT_ARRAY_BUFFER, app.indices.size() * sizeof(unsigned int), &app.indices[0], GL_STATIC_DRAW);
+
                 // Allocate space and send Vertex Data
                 glGenBuffers(1, &vbo);
                 glBindBuffer(GL_ARRAY_BUFFER, vbo);
-                glBufferData(GL_ARRAY_BUFFER, sizeof(vertices)+sizeof(normals)+sizeof(colors), 0, GL_STATIC_DRAW);
-                glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
-                glBufferSubData(GL_ARRAY_BUFFER, sizeof(vertices), sizeof(normals), normals);
-                glBufferSubData(GL_ARRAY_BUFFER, sizeof(vertices)+sizeof(normals), sizeof(colors), colors);
+                glBufferData(GL_ARRAY_BUFFER, 3*sizeof(float)*(app.nodes.size() + app.normals.size() + app.colors.size()), 0, GL_DYNAMIC_DRAW);
+                glBufferSubData(GL_ARRAY_BUFFER, 0, 3*sizeof(float)*(app.nodes.size()), &app.nodes[0]);
+                glBufferSubData(GL_ARRAY_BUFFER, 3*sizeof(float)*app.nodes.size(), 3*sizeof(float)*app.normals.size(), &app.normals[0]);
+                glBufferSubData(GL_ARRAY_BUFFER, 3*sizeof(float)*(app.nodes.size() + app.normals.size()), 3*sizeof(float)*app.colors.size(), &app.colors[0]);
         }
 
         ~Context() {
@@ -124,10 +95,12 @@ public:
         }
 
         GLuint getVbo() { return vbo; }
+        GLuint getElementBuffer() { return elementBuffer; }
 
     private:
         const MyVRApp& app;
         GLuint vbo;
+        GLuint elementBuffer;
     };
 
     class Renderer : public VRAppRenderer {
@@ -143,12 +116,13 @@ public:
                 glGenVertexArrays(1, &vao);
                 glBindVertexArray(vao);
                 glBindBuffer(GL_ARRAY_BUFFER, sharedContext.getVbo());
+                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, sharedContext.getElementBuffer());
                 glEnableVertexAttribArray(0);
                 glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat), (char*)0);
                 glEnableVertexAttribArray(1);
-                glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat), (char*)0 + sizeof(vertices));
+                glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat), (char*)0 + 3*sizeof(float)*app.nodes.size());
                 glEnableVertexAttribArray(2);
-                glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat), (char*)0 + sizeof(vertices) + sizeof(normals));
+                glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat), (char*)0 + 3*sizeof(float)*(app.nodes.size() + app.normals.size()));
 
                 // Create shader
                 std::string vertexShader =
@@ -217,7 +191,7 @@ public:
 
             // Draw cube
             glBindVertexArray(vao);
-            glDrawArrays(GL_TRIANGLES, 0, 36);
+            glDrawElements(GL_TRIANGLES, app.indices.size(), GL_UNSIGNED_INT, (void*)0);
             glBindVertexArray(0);
 
             // reset program
@@ -273,13 +247,17 @@ public:
     }
 
 private:
-	float model[16];
+    float model[16];
     VRMain *vrMain;
+    std::vector<unsigned int> indices;
+    std::vector<glm::vec3> nodes;
+    std::vector<glm::vec3> normals;
+    std::vector<glm::vec3> colors;
 };
 
 /// Main method which creates and calls application
 int main(int argc, char **argv) {
-	MyVRApp app(argc, argv);
-	app.run();
-	return 0;
+    MyVRApp app(argc, argv);
+    app.run();
+    return 0;
 }
